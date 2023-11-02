@@ -3,12 +3,13 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Example's documentation!
+oneAPI Community Documentation
 ===================================
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
-   some-feature.md
-   another-feature.md
+   beginners-guide-to-oneapi.md
+   oneapi-developer-documentation-links.md
+   building-oneapi-from-source.md
