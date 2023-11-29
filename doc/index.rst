@@ -10,6 +10,6 @@ oneAPI Community Documentation
    :maxdepth: 2
    :caption: Contents:
 
-   beginners-guide-to-oneapi.md
    oneapi-developer-documentation-links.md
    building-oneapi-from-source.md
+   beginners-guide-to-oneapi.md
