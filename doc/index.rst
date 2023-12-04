@@ -11,5 +11,6 @@ oneAPI Community Documentation
    :caption: Contents:
 
    oneapi-developer-documentation-links.md
+   building-your-developer-environment
    building-oneapi-from-source.md
-   beginners-guide-to-oneapi.md
+   Build-oneDNN
