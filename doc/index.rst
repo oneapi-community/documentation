@@ -14,3 +14,6 @@ oneAPI Community Documentation
    building-your-developer-environment
    building-oneapi-from-source.md
    Build-oneDNN
+   starting-a-project
+   tutorials
+   tricks-hints
