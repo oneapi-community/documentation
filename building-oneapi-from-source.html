@@ -1,0 +1,654 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Building oneAPI and the SYCL compiler from Source. &#8212; oneAPI Community Driven Documentation 0.1 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!-- 
+    this give us a css class that will be invisible only if js is disabled 
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=a3416100" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+
+    <script src="_static/documentation_options.js?v=e1a75a79"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'building-oneapi-from-source';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Building oneDNN from source" href="Build-oneDNN.html" />
+    <link rel="prev" title="Building your developer environment" href="building-your-developer-environment.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">oneAPI Community Driven Documentation 0.1 documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="oneapi-developer-documentation-links.html">oneAPI Documentation Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="building-your-developer-environment.html">Building your developer environment</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Building oneAPI and the SYCL compiler from Source.</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Build-oneDNN.html">Building oneDNN from source</a></li>
+<li class="toctree-l1"><a class="reference internal" href="starting-a-project.html">Starting a project a oneAPI project</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials and other relevant documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tricks-hints.html">Tricks and Hints</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/building-oneapi-from-source.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Building oneAPI and the SYCL compiler from Source.</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#build-the-sycl-dpc-compiler">Build the SYCL DPC++ compiler</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#prerequisites">Prerequisites</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Distrobox</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-up-the-container">Setting up the container</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#build-the-dpc-compiler">Build the DPC++ Compiler</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#using-the-build-environment">Using the build environment</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#automatically-setting-up-the-container-to-set-up-the-sycl-environment">Automatically setting up the container to set up the SYCL environment</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#conclusion">Conclusion</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="building-oneapi-and-the-sycl-compiler-from-source">
+<h1>Building oneAPI and the SYCL compiler from Source.<a class="headerlink" href="#building-oneapi-and-the-sycl-compiler-from-source" title="Link to this heading">#</a></h1>
+<p>oneAPI is a completley open platform and you can build everything from source. Here you will learn how to build each of the components of oneAPI. One of the promises of oneAPI is being able to use all open source components.</p>
+<section id="build-the-sycl-dpc-compiler">
+<h2>Build the SYCL DPC++ compiler<a class="headerlink" href="#build-the-sycl-dpc-compiler" title="Link to this heading">#</a></h2>
+<p>There are many flavors of SYCL compilers that are available. The most popular is the DPC++ compiler that is built from llvm. We’ll show you how to build the SYC compiler.</p>
+<p>Currently, this tutorial only supports a Linux distribution. However, it
+should work on WSL2. If there are build issues, please file an issue.</p>
+<section id="prerequisites">
+<h3>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>A Linux distribution that supports distrobox, systemd, podman</p></li>
+<li><p><a class="reference external" href="https://github.com/89luca89/distrobox/blob/main/docs/README.md">Distrobox</a></p></li>
+</ul>
+<p>Alternatively, Ubuntu LTS 20.04 is your base OS or already in a container
+or running bare metal.</p>
+</section>
+<section id="id1">
+<h3>Distrobox<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
+<p>Most distribution should have packaged distrobox - if not, feel free to
+install it from <a class="github reference external" href="https://github.com/89luca89/distrobox">89luca89/distrobox</a> on your distribution.</p>
+<p>Whether distrobox supports your distro - you can check out distrobox <a class="reference external" href="https://github.com/89luca89/distrobox/blob/main/docs/compatibility.md#host-distros">Host
+Distro</a></p>
+<p>These steps were tested on Fedora SilverBlue.</p>
+<p>You can complete skip the distrobox method if you are running Ubuntu LTS 20.04.</p>
+</section>
+<section id="setting-up-the-container">
+<h3>Setting up the container<a class="headerlink" href="#setting-up-the-container" title="Link to this heading">#</a></h3>
+<p>Assuming that you have distrobox installed. Let’s get started. Pull up a
+Linux shell.</p>
+<p>Create the container by:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>distrobox<span class="w"> </span>create<span class="w"> </span>oneapi<span class="w"> </span>-i<span class="w"> </span>docker.io/library/ubuntu:20.04
+$<span class="w"> </span>distrobox<span class="w"> </span>enter<span class="w"> </span>oneapi
+</pre></div>
+</div>
+<p>You will be in a container that is running Ubuntu 20.04.</p>
+</section>
+<section id="build-the-dpc-compiler">
+<h3>Build the DPC++ Compiler<a class="headerlink" href="#build-the-dpc-compiler" title="Link to this heading">#</a></h3>
+<p>You will need to create a workspace. This workspace is where you are going
+to have all the SYCL libraries and compiler binaries. You’ll be setting up
+an LD_LIBRARY_PATH to point at this space.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>mkdir<span class="w"> </span>sycl_workspace
+$<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>sycl_workspace
+<span class="nb">export</span><span class="w"> </span><span class="nv">DPCPP_HOME</span><span class="o">=</span><span class="se">\`</span>pwd<span class="se">\`</span>
+$<span class="w"> </span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/intel/llvm<span class="w"> </span>-b<span class="w"> </span>sycl
+</pre></div>
+</div>
+<p>Now to configure the build:
+.. code-block:: shell</p>
+<blockquote>
+<div><p><cite>$ python $DPCPP_HOME/llvm/buildbot/configure.py</cite>
+<cite>$ python $DPCPP_HOME/llvm/buildbot/compile.py</cite></p>
+</div></blockquote>
+<p>Wait till the build is done.</p>
+<p>We should have a compiler, but we don’t have the basic oneAPI libraries.</p>
+<p>We first need to install our low level runtimes: the things that recognizes
+accelerators. For now, we’ll use the ones that recognize the x86 Intel
+processors as that is what is on my laptop right now.</p>
+<p>We will first need to identify the latest versions of the
+runtimes we need to download. You need to look this up in the
+<a class="reference external" href="https://github.com/intel/llvm/blob/sycl/buildbot/dependency.conf">dependency.conf</a> .</p>
+<p>Now to install the libraries:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>sudo<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span>/opt/intel
+$<span class="w"> </span>sudo<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span>/etc/OpenCL/vendors/intel_fpgaemu.icd
+$<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>/tmp
+$<span class="w"> </span>wget<span class="w"> </span>https://github.com/intel/llvm/releases/download/2022-WW50/oclcpuexp-2022.15.12.0.01_rel.tar.gz
+$<span class="w"> </span>wget<span class="w"> </span>https://github.com/intel/llvm/releases/download/2022-WW50/fpgaemu-2022.15.12.0.01_rel.tar.gz
+$<span class="w"> </span>sudo<span class="w"> </span>bash
+<span class="c1"># cd /opt/intel</span>
+<span class="c1"># mkdir oclfpgaemu-&lt;fpga_version&gt;</span>
+<span class="c1"># cd oclfpgaemu-&lt;fpga_version&gt;</span>
+<span class="c1"># tar xvfpz /tmp/fpgaemu-2022.15.12.0.01_rel.tar.gz</span>
+<span class="c1"># cd ..</span>
+<span class="c1"># mkdir oclcpuexp_&lt;cpu_version&gt;</span>
+<span class="c1"># cd oclcpuexp-&lt;cpu_version&gt;</span>
+<span class="c1"># tar xvfpz /tmp/oclcpuexp-&lt;cpu_version&gt;</span>
+<span class="c1"># cd ..</span>
+</pre></div>
+</div>
+<p>Now we need to create some configuration files:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># pwd</span>
+/opt/intel
+<span class="c1"># echo  /opt/intel/oclfpgaemu_&lt;fpga_version&gt;/x64/libintelocl_emu.so &gt; /etc/OpenCL/vendors/intel_fpgaemu.icd</span>
+<span class="c1"># echo /opt/intel/oclcpuexp_&lt;cpu_version&gt;/x64/libintelocl.so &gt; /etc/OpenCL/vendors/intel_expcpu.icd</span>
+</pre></div>
+</div>
+<p>Grab the latest release of oneTBB from github.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>/tmp
+$<span class="w"> </span>wget<span class="w"> </span>https://github.com/oneapi-src/oneTBB/releases/download/v2021.7.0/oneapi-tbb-2021.7.0-lin.tgz
+</pre></div>
+</div>
+<p>Extract the tar file into /opt/intel:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>/opt/intel
+$<span class="w"> </span>sudo<span class="w"> </span>bash
+<span class="c1"># tar xvfpz /tmp/oneapi-tbb-2021.7.0-lin.tgz</span>
+</pre></div>
+</div>
+<p>We’ll need to reference some of the libraries in the oneTBB directory in
+our build. There will be new versions all the time. In order to keep this
+documentation relevant and not have to constantly update - there will be a
+‘version’ placeholder for the actual version.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># ln -s /opt/intel/oneapi-tbb-&lt;tbb_version&gt;/lib/intel64/gcc4.8/libtbb.so /opt/intel/oclfpgaemu_&lt;fpga_version&gt;/x64</span>
+<span class="c1"># ln -s /opt/intel/oneapi-tbb-&lt;tbb_version&gt;/lib/intel64/gcc4.8/libtbbmalloc.so /opt/intel/oclfpgaemu_&lt;fpga_version&gt;/x64</span>
+<span class="c1"># ln -s /opt/intel/oneapi-tbb-&lt;tbb_version&gt;/lib/intel64/gcc4.8/libtbb.so.12 /opt/intel/oclfpgaemu_&lt;fpga_version&gt;/x64</span>
+<span class="c1"># ln -s /opt/intel/oneapi-tbb-&lt;tbb_version&gt;/lib/intel64/gcc4.8/libtbbmalloc.so.2 /opt/intel/oclfpgaemu_&lt;fpga_version&gt;/x64</span>
+
+<span class="c1"># ln -s /opt/intel/oneapi-tbb-&lt;tbb_version&gt;/lib/intel64/gcc4.8/libtbb.so /opt/intel/oclcpuexp_&lt;cpu_version&gt;/x64</span>
+<span class="c1"># ln -s /opt/intel/oneapi-tbb-&lt;tbb_version&gt;/lib/intel64/gcc4.8/libtbbmalloc.so /opt/intel/oclcpuexp_&lt;cpu_version&gt;/x64</span>
+<span class="c1"># ln -s /opt/intel/oneapi-tbb-&lt;tbb_version&gt;/lib/intel64/gcc4.8/libtbb.so.12 /opt/intel/oclcpuexp_&lt;cpu_version&gt;/x64</span>
+<span class="c1"># ln -s /opt/intel/oneapi-tbb-&lt;tbb_version&gt;/lib/intel64/gcc4.8/libtbbmalloc.so.2 /opt/intel/oclcpuexp_&lt;cpu_version&gt;/x64</span>
+</pre></div>
+</div>
+<p>Now we will configure the library paths:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="c1"># echo /opt/intel/oclfpgaemu_&lt;fpga_version&gt;/x64 &gt; /etc/ld.so.conf.d/libintelopenclexp.conf</span>
+<span class="c1"># echo /opt/intel/oclcpuexp_&lt;cpu_version&gt;/x64 &gt;&gt; /etc/ld.so.conf.d/libintelopenclexp.conf</span>
+<span class="c1"># ldconfig -f /etc/ld.so.conf.d/libintelopenclexp.conf</span>
+</pre></div>
+</div>
+<p>We’ll need to test the environment an make sure it passes all tests.</p>
+<p>Run this test as yourself not root.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>python<span class="w"> </span><span class="nv">$DPCPP_HOME</span>/llvm/buildbot/check.py
+</pre></div>
+</div>
+<p>If you’ve come back with no failures then the build environment is correctly
+setup.</p>
+</section>
+<section id="using-the-build-environment">
+<h3>Using the build environment<a class="headerlink" href="#using-the-build-environment" title="Link to this heading">#</a></h3>
+<p>To use this build environment - here is a test setup that you can use.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span>~/src/simple-oneapi/
+$<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>~/src/simple-oneapi
+$<span class="w"> </span><span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span><span class="nv">$DPCPP_HOME</span>/llvm/build/bin:<span class="nv">$PATH</span>
+$<span class="w"> </span><span class="nb">export</span><span class="w"> </span><span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span><span class="nv">$DPCPP_HOME</span>/llvm/build/lib:<span class="nv">$LD_LIBRARY_PATH</span>
+$<span class="w"> </span>cat<span class="w"> </span>&gt;<span class="w"> </span>simple-oneapi.cpp
+
+<span class="c1">#include &lt;sycl/sycl.hpp&gt;</span>
+
+int<span class="w"> </span>main<span class="o">()</span><span class="w"> </span><span class="o">{</span>
+<span class="w">  </span>//<span class="w"> </span>Creating<span class="w"> </span>buffer<span class="w"> </span>of<span class="w"> </span><span class="m">4</span><span class="w"> </span>ints<span class="w"> </span>to<span class="w"> </span>be<span class="w"> </span>used<span class="w"> </span>inside<span class="w"> </span>the<span class="w"> </span>kernel<span class="w"> </span>code
+<span class="w">  </span>sycl::buffer&lt;sycl::cl_int,<span class="w"> </span><span class="m">1</span>&gt;<span class="w"> </span>Buffer<span class="o">(</span><span class="m">4</span><span class="o">)</span><span class="p">;</span>
+
+<span class="w">  </span>//<span class="w"> </span>Creating<span class="w"> </span>SYCL<span class="w"> </span>queue
+<span class="w">  </span>sycl::queue<span class="w"> </span>Queue<span class="p">;</span>
+
+<span class="w">  </span>//<span class="w"> </span>Size<span class="w"> </span>of<span class="w"> </span>index<span class="w"> </span>space<span class="w"> </span><span class="k">for</span><span class="w"> </span>kernel
+<span class="w">  </span>sycl::range&lt;<span class="m">1</span>&gt;<span class="w"> </span>NumOfWorkItems<span class="o">{</span>Buffer.size<span class="o">()}</span><span class="p">;</span>
+
+<span class="w">  </span>//<span class="w"> </span>Submitting<span class="w"> </span><span class="nb">command</span><span class="w"> </span>group<span class="o">(</span>work<span class="o">)</span><span class="w"> </span>to<span class="w"> </span>queue
+<span class="w">  </span>Queue.submit<span class="o">([</span><span class="p">&amp;</span><span class="o">](</span>sycl::handler<span class="w"> </span><span class="p">&amp;</span>cgh<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span>//<span class="w"> </span>Getting<span class="w"> </span>write<span class="w"> </span>only<span class="w"> </span>access<span class="w"> </span>to<span class="w"> </span>the<span class="w"> </span>buffer<span class="w"> </span>on<span class="w"> </span>a<span class="w"> </span>device
+<span class="w">    </span>auto<span class="w"> </span><span class="nv">Accessor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>Buffer.get_access&lt;sycl::access::mode::write&gt;<span class="o">(</span>cgh<span class="o">)</span><span class="p">;</span>
+<span class="w">    </span>//<span class="w"> </span>Executing<span class="w"> </span>kernel
+<span class="w">    </span>cgh.parallel_for&lt;class<span class="w"> </span>FillBuffer&gt;<span class="o">(</span>
+<span class="w">        </span>NumOfWorkItems,<span class="w"> </span><span class="o">[=](</span>sycl::id&lt;<span class="m">1</span>&gt;<span class="w"> </span>WIid<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">          </span>//<span class="w"> </span>Fill<span class="w"> </span>buffer<span class="w"> </span>with<span class="w"> </span>indexes
+<span class="w">          </span>Accessor<span class="o">[</span>WIid<span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">(</span>sycl::cl_int<span class="o">)</span>WIid.get<span class="o">(</span><span class="m">0</span><span class="o">)</span><span class="p">;</span>
+<span class="w">        </span><span class="o">})</span><span class="p">;</span>
+<span class="w">  </span><span class="o">})</span><span class="p">;</span>
+
+<span class="w">  </span>//<span class="w"> </span>Getting<span class="w"> </span><span class="nb">read</span><span class="w"> </span>only<span class="w"> </span>access<span class="w"> </span>to<span class="w"> </span>the<span class="w"> </span>buffer<span class="w"> </span>on<span class="w"> </span>the<span class="w"> </span>host.
+<span class="w">  </span>//<span class="w"> </span>Implicit<span class="w"> </span>barrier<span class="w"> </span>waiting<span class="w"> </span><span class="k">for</span><span class="w"> </span>queue<span class="w"> </span>to<span class="w"> </span><span class="nb">complete</span><span class="w"> </span>the<span class="w"> </span>work.
+<span class="w">  </span>const<span class="w"> </span>auto<span class="w"> </span><span class="nv">HostAccessor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>Buffer.get_access&lt;sycl::access::mode::read&gt;<span class="o">()</span><span class="p">;</span>
+
+<span class="w">  </span>//<span class="w"> </span>Check<span class="w"> </span>the<span class="w"> </span>results
+<span class="w">  </span>bool<span class="w"> </span><span class="nv">MismatchFound</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>false<span class="p">;</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="o">(</span>size_t<span class="w"> </span><span class="nv">I</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0</span><span class="p">;</span><span class="w"> </span>I<span class="w"> </span>&lt;<span class="w"> </span>Buffer.size<span class="o">()</span><span class="p">;</span><span class="w"> </span>++I<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">(</span>HostAccessor<span class="o">[</span>I<span class="o">]</span><span class="w"> </span>!<span class="o">=</span><span class="w"> </span>I<span class="o">)</span><span class="w"> </span><span class="o">{</span>
+<span class="w">      </span>std::cout<span class="w"> </span>&lt;&lt;<span class="w"> </span><span class="s2">&quot;The result is incorrect for element: &quot;</span><span class="w"> </span><span class="s">&lt;&lt; I</span>
+<span class="s">                &lt;&lt; &quot; , expected: &quot; &lt;&lt; I</span><span class="w"> </span>&lt;&lt;<span class="w"> </span><span class="s2">&quot; , got: &quot;</span><span class="w"> </span>&lt;&lt;<span class="w"> </span>HostAccessor<span class="o">[</span>I<span class="o">]</span>
+<span class="w">                </span><span class="s">&lt;&lt; std::endl;</span>
+<span class="s">      MismatchFound = true;</span>
+<span class="s">    }</span>
+<span class="s">  }</span>
+
+<span class="s">  if (!MismatchFound) {</span>
+<span class="s">    std</span>::cout<span class="w"> </span>&lt;&lt;<span class="w"> </span><span class="s2">&quot;The results are correct!&quot;</span><span class="w"> </span><span class="s">&lt;&lt; std::endl;</span>
+<span class="s">  }</span>
+
+<span class="s">  return Mis</span>matchFound<span class="p">;</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>To build this source file:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>clang++<span class="w"> </span>-fsycl<span class="w"> </span>simple-sycl-app.cpp<span class="w"> </span>-o<span class="w"> </span>simple-sycl-app
+</pre></div>
+</div>
+</section>
+<section id="automatically-setting-up-the-container-to-set-up-the-sycl-environment">
+<h3>Automatically setting up the container to set up the SYCL environment<a class="headerlink" href="#automatically-setting-up-the-container-to-set-up-the-sycl-environment" title="Link to this heading">#</a></h3>
+<p>You will recall that we had to set up some environment variables to make
+everything work. Specifically, we needed setup some paths so that you an
+find the DPC++ compiler.</p>
+<p>If you set up this environment using distrobox instead of a VM/bare metal
+install of Ubuntu 20.04.</p>
+<p>Use a fresh terminal or exit out of the container.</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>uname<span class="w"> </span>-a
+</pre></div>
+</div>
+<p>On a Fedora system you should get:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>Linux<span class="w"> </span>fedora<span class="w"> </span><span class="m">6</span>.0.13-300.fc37.x86_64<span class="w"> </span><span class="c1">#1 SMP PREEMPT_DYNAMIC Wed Dec 14 16:15:19 UTC 2022 x86_64 x86_64 x86_64 GNU/Linux</span>
+</pre></div>
+</div>
+<p>Use the window where you are in the Ubuntu container or enter the container:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>distrobox<span class="w"> </span>enter<span class="w"> </span>oneapi
+$<span class="w"> </span>uname<span class="w"> </span>-a
+Linux<span class="w"> </span>oneapi.fedora<span class="w"> </span><span class="m">6</span>.0.13-300.fc37.x86_64<span class="w"> </span><span class="c1">#1 SMP PREEMPT_DYNAMIC Wed Dec 14 16:15:19 UTC 2022 x86_64 x86_64 x86_64 GNU/Linux</span>
+</pre></div>
+</div>
+<p>You will notice that after “Linux” when you are in the container, there is a “oneapi” prefix to fedora.</p>
+<p>We can take advantage of that. Let’s make sure that when we enter the
+container that we can set things up from the shell perspective to be ready
+to write SYCL code.</p>
+<p>Exit out of your container or use a fresh terminal and add this to your
+.bashrc:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span><span class="nv">$oneapi</span><span class="w"> </span>-gt<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">   </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Initializing oneAPI&quot;</span>
+<span class="w">   </span><span class="nb">export</span><span class="w"> </span><span class="nv">DPCPP_HOME</span><span class="o">=</span><span class="s2">&quot;/var/home/your_username/src/dpcplusplus&quot;</span>
+<span class="w">   </span><span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$PATH</span><span class="s2">:/var/home/your_username/.local/bin:</span><span class="nv">$DPCPP_HOME</span><span class="s2">/llvm/build/bin&quot;</span>
+<span class="w">   </span><span class="nb">export</span><span class="w"> </span><span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$DPCPP_HOME</span><span class="s2">/llvm/build/lib&quot;</span>
+<span class="k">fi</span>
+</pre></div>
+</div>
+<p>Replace all paths with correct paths set in DPCPP_HOME from the beginning.</p>
+</section>
+<section id="conclusion">
+<h3>Conclusion<a class="headerlink" href="#conclusion" title="Link to this heading">#</a></h3>
+<p>You’ve successfully completed building your own oneAPI environment. Things
+didn’t work out for you? Please file an issue with details of the OS and
+what problem you’ve encountered.</p>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="building-your-developer-environment.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Building your developer environment</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="Build-oneDNN.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Building oneDNN from source</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#build-the-sycl-dpc-compiler">Build the SYCL DPC++ compiler</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#prerequisites">Prerequisites</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Distrobox</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-up-the-container">Setting up the container</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#build-the-dpc-compiler">Build the DPC++ Compiler</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#using-the-build-environment">Using the build environment</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#automatically-setting-up-the-container-to-set-up-the-sycl-environment">Automatically setting up the container to set up the SYCL environment</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#conclusion">Conclusion</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Sriram Ramkrishna
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright copyright by the folks who contributed.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
